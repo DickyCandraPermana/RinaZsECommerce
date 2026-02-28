@@ -12,8 +12,10 @@ public class Product : BaseEntity
   public required decimal Price { get; set; }
   public required bool Status { get; set; }
   public required Guid CategoryId { get; set; }
+  public Guid SupplierId { get; set; }
 
   public Category Category { get; set; } = null!;
+  public Supplier Supplier { get; set; } = null!;
   public ICollection<ProductImage> Images { get; set; } = [];
   public ICollection<Order> Orders { get; set; } = [];
   public ICollection<StockLog> StockLogs { get; set; } = [];
