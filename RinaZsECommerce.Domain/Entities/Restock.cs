@@ -7,5 +7,7 @@ public class Restock : BaseEntity
   public required Guid ProductId { get; set; }
   public required Guid SupplierId { get; set; }
   public required int Amount { get; set; }
-  
+
+  public Product? Product { get; set; }
+  public Supplier? Supplier { get; set; }
 }

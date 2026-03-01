@@ -13,4 +13,10 @@
     <Folder Include="Interfaces\" />
   </ItemGroup>
 
+  
+  <ItemGroup>
+    <ProjectReference Include="..\RinaZsECommerce.Infrastructure\RinaZsECommerce.Infrastructure.csproj" />
+    <ProjectReference Include="..\RinaZsECommerce.Domain\RinaZsECommerce.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

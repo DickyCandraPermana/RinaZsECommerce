@@ -11,6 +11,6 @@ public class Review : BaseEntity
   public string[] Tags { get; set; } = [];
   public string? Comment { get; set; }
 
-  public User? User { get; set; }
+  public UserProfile? User { get; set; }
   public Product? Product { get; set; }
 }

@@ -12,4 +12,10 @@
     <Folder Include="Middlewares\" />
   </ItemGroup>
 
+  
+  <ItemGroup>
+    <ProjectReference Include="..\RinaZsECommerce.Infrastructure\RinaZsECommerce.Infrastructure.csproj" />
+    <ProjectReference Include="..\RinaZsECommerce.Application\RinaZsECommerce.Application.csproj" />
+  </ItemGroup>
+
 </Project>

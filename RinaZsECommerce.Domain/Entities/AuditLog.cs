@@ -13,4 +13,6 @@ public class AuditLog : BaseEntity
   public string? NewValues { get; set; } // JSON string
 
   public string? IpAddress { get; set; }
+
+  public UserProfile? User { get; set; }
 }
