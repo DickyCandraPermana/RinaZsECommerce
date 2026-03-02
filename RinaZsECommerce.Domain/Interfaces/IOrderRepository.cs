@@ -8,7 +8,7 @@ namespace RinaZsECommerce.Domain.Interfaces;
 
 public interface IOrderRepository : IGenericRepository<Order, OrderFilter>
 {
+  Task<IEnumerable<Order>> GetOrdersWithDetailsAsync();
   Task<OrderDetail?> GetDetailByIdAsync(Guid orderDetailId);
-  Task<IEnumerable<OrderDetail>> GetOrderDetailsByOrderIdAsync(Guid orderId);
-  Task<IEnumerable<OrderDetail>> GetOrderDetailsByOrderAndProductAsync(Guid orderId, Guid productId);
+  Task<OrderDetail?> GetDetailWithOrderAsync(Guid orderDetailId);
 }
