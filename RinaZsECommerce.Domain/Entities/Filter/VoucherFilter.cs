@@ -1,8 +1,9 @@
 using System;
+using RinaZsECommerce.Domain.Common;
 
 namespace RinaZsECommerce.Domain.Entities.Filter;
 
-public class VoucherFilter
+public class VoucherFilter : BaseFilter
 {
   public decimal? MinAmount { get; set; }
   public decimal? MaxAmount { get; set; }
