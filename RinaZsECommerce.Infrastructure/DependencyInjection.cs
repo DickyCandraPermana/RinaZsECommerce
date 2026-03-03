@@ -1,5 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using RinaZsECommerce.Domain.Interfaces;
 using RinaZsECommerce.Infrastructure.Persistence;
 
