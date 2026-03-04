@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using RinaZsECommerce.Domain.Entities;
 using RinaZsECommerce.Domain.Entities.Filter;
+using RinaZsECommerce.Domain.Enums;
 using RinaZsECommerce.Domain.Interfaces;
 
 namespace RinaZsECommerce.Infrastructure.Persistence.Repositories;
@@ -16,17 +17,29 @@ public class ProductRepository : GenericRepository<Product, ProductFilter>, IPro
     return await _dbSet.Where(p => p.Stock > 0).ToListAsync();
   }
 
-  public async Task<bool> UpdateStockAsync(Guid productId, int quantity)
+  public async Task<bool> UpdateStockAsync(Guid productId, int diff, Guid userId, StockTransactionType transactionType)
   {
     var product = await _dbSet.FindAsync(productId);
+    if (product == null) return false;
 
-    if (product == null || product.Stock < quantity)
+    var stockBefore = product.Stock;
+    var stockAfter = stockBefore + diff; // Gunakan tambah untuk adjustment
+
+    if (stockAfter < 0) return false; // Validasi agar tidak negatif
+
+    // Catat ke StockLog (Gunakan Unit of Work context yang sama)
+    await _context.StockLogs.AddAsync(new StockLog
     {
-      return false;
-    }
+      ProductId = productId,
+      TransactionType = transactionType,
+      Quantity = diff,
+      StockBefore = stockBefore,
+      StockAfter = stockAfter,
+      UserId = userId,
+      CreatedAt = DateTime.UtcNow
+    });
 
-    product.Stock -= quantity;
-
+    product.Stock = stockAfter;
     return true;
   }
 
