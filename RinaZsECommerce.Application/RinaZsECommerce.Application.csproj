@@ -10,6 +10,7 @@
     <Folder Include="Behaviors\" />
     <Folder Include="Common\" />
     <Folder Include="DTOs\" />
+    <Folder Include="Features\Products\Commands\DeleteProduct\" />
     <Folder Include="Features\Products\Commands\UpdateProduct\" />
     <Folder Include="Features\Products\Queries\" />
     <Folder Include="Interfaces\" />
