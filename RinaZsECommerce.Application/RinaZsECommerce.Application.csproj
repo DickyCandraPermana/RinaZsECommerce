@@ -13,6 +13,7 @@
     <Folder Include="Features\Products\Commands\DeleteProduct\" />
     <Folder Include="Features\Products\Commands\UpdateProduct\" />
     <Folder Include="Features\Products\Queries\" />
+    <Folder Include="Features\Products\Queries\GetProductById\" />
     <Folder Include="Interfaces\" />
   </ItemGroup>
 
