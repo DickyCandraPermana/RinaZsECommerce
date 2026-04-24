@@ -21,7 +21,8 @@ public class AppDbContext : DbContext
   public DbSet<Review> Reviews => Set<Review>();
   public DbSet<StockLog> StockLogs => Set<StockLog>();
   public DbSet<Supplier> Suppliers => Set<Supplier>();
-  public DbSet<UserProfile> Users => Set<UserProfile>();
+  public DbSet<User> Users => Set<User>();
+  public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
   public DbSet<Voucher> Vouchers => Set<Voucher>();
 
   public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

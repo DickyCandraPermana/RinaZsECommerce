@@ -16,6 +16,7 @@ public static class DependencyInjection
       options.UseNpgsql(connectionString));
 
     services.AddScoped<IUnitOfWork, UnitOfWork>();
+    services.AddScoped<RinaZsECommerce.Application.Interfaces.IJwtTokenGenerator, RinaZsECommerce.Infrastructure.Services.JwtTokenGenerator>();
 
     return services;
   }
