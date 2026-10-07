@@ -2,6 +2,7 @@ using System;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using RinaZsECommerce.Domain.Entities;
+using RinaZsECommerce.Domain.Exceptions;
 using RinaZsECommerce.Domain.Interfaces;
 
 namespace RinaZsECommerce.Application.Features.Users.Commands.RegisterUser;
@@ -21,7 +22,7 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, Guid>
     {
         var isUnique = await _unitOfWork.Users.IsEmailUniqueAsync(request.Email);
         if (!isUnique)
-            throw new Exception("Email already exists"); // TODO: Use custom exception
+            throw new EmailAlreadyExistsException(request.Email);
 
         var profileId = Guid.NewGuid();
         var user = new User
