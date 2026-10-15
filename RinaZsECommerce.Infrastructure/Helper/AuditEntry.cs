@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using RinaZsECommerce.Domain.Entities;
@@ -9,7 +9,7 @@ public class AuditEntry
 {
   public AuditEntry(EntityEntry entry) => Entry = entry;
   public EntityEntry Entry { get; }
-  public string UserId { get; set; } = "System";
+  public Guid? UserId { get; set; }
   public string TableName { get; set; } = null!;
   public Dictionary<string, object> OldValues { get; } = new();
   public Dictionary<string, object> NewValues { get; } = new();

@@ -1,5 +1,7 @@
-using System;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RinaZsECommerce.Domain.Entities;
 using RinaZsECommerce.Domain.Entities.Filter;
@@ -12,9 +14,22 @@ public class ProductRepository : GenericRepository<Product, ProductFilter>, IPro
 {
   public ProductRepository(AppDbContext context) : base(context) { }
 
+  public override async Task<Product?> GetByIdAsync(Guid id)
+  {
+    return await _dbSet
+        .Include(p => p.Category)
+        .Include(p => p.Images)
+        .Include(p => p.Supplier)
+        .FirstOrDefaultAsync(p => p.Id == id);
+  }
+
   public async Task<IEnumerable<Product>> GetActiveProductsAsync()
   {
-    return await _dbSet.Where(p => p.Stock > 0).ToListAsync();
+    return await _dbSet
+        .Include(p => p.Category)
+        .Include(p => p.Images)
+        .Where(p => p.Stock > 0 && p.Status)
+        .ToListAsync();
   }
 
   public async Task<bool> UpdateStockAsync(Guid productId, int diff, Guid userId, StockTransactionType transactionType)
@@ -23,11 +38,10 @@ public class ProductRepository : GenericRepository<Product, ProductFilter>, IPro
     if (product == null) return false;
 
     var stockBefore = product.Stock;
-    var stockAfter = stockBefore + diff; // Gunakan tambah untuk adjustment
+    var stockAfter = stockBefore + diff;
 
-    if (stockAfter < 0) return false; // Validasi agar tidak negatif
+    if (stockAfter < 0) return false;
 
-    // Catat ke StockLog (Gunakan Unit of Work context yang sama)
     await _context.StockLogs.AddAsync(new StockLog
     {
       ProductId = productId,
@@ -45,10 +59,12 @@ public class ProductRepository : GenericRepository<Product, ProductFilter>, IPro
 
   protected override IQueryable<Product> ApplyFilter(IQueryable<Product> query, ProductFilter filter)
   {
+    query = query.Include(p => p.Category).Include(p => p.Images);
+
     if (!string.IsNullOrEmpty(filter.SearchTerm))
     {
-      // Search berdasarkan Username atau Nama Lengkap di Profile
-      query = query.Where(p => p.Name.Contains(filter.SearchTerm));
+      query = query.Where(p => p.Name.ToLower().Contains(filter.SearchTerm.ToLower()) ||
+                               (p.Description != null && p.Description.ToLower().Contains(filter.SearchTerm.ToLower())));
     }
 
     if (filter.MaxPrice >= 0)
@@ -58,7 +74,7 @@ public class ProductRepository : GenericRepository<Product, ProductFilter>, IPro
 
     if (filter.MinPrice >= 0)
     {
-      query = query.Where(p => p.Price > filter.MinPrice);
+      query = query.Where(p => p.Price >= filter.MinPrice);
     }
 
     if (filter.Status != null)
@@ -87,8 +103,6 @@ public class ProductRepository : GenericRepository<Product, ProductFilter>, IPro
       "price" => filter.IsAscending ? query.OrderBy(p => p.Price) : query.OrderByDescending(p => p.Price),
       "rating" => filter.IsAscending ? query.OrderBy(p => p.Rating) : query.OrderByDescending(p => p.Rating),
       "stock" => filter.IsAscending ? query.OrderBy(p => p.Stock) : query.OrderByDescending(p => p.Stock),
-      "supplier" => filter.IsAscending ? query.OrderBy(p => p.Supplier.Name) : query.OrderByDescending(p => p.Supplier.Name),
-      "category" => filter.IsAscending ? query.OrderBy(p => p.Supplier.Name) : query.OrderByDescending(p => p.Supplier.Name),
       _ => filter.IsAscending ? query.OrderBy(p => p.CreatedAt) : query.OrderByDescending(p => p.CreatedAt),
     };
 

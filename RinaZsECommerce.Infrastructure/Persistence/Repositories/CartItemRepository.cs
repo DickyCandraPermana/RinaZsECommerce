@@ -1,4 +1,6 @@
-using System;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RinaZsECommerce.Domain.Entities;
 using RinaZsECommerce.Domain.Entities.Filter;
@@ -10,8 +12,18 @@ public class CartItemRepository : GenericRepository<CartItem, CartItemFilter>, I
 {
   public CartItemRepository(AppDbContext context) : base(context) { }
 
+  public override async Task<CartItem?> GetByIdAsync(Guid id)
+  {
+    return await _dbSet
+        .Include(c => c.Product)
+        .ThenInclude(p => p.Images)
+        .FirstOrDefaultAsync(c => c.Id == id);
+  }
+
   protected override IQueryable<CartItem> ApplyFilter(IQueryable<CartItem> query, CartItemFilter filter)
   {
+    query = query.Include(c => c.Product).ThenInclude(p => p.Images);
+
     if (!string.IsNullOrEmpty(filter.SearchTerm))
     {
       query = query.Where(c => c.Product.Name.Contains(filter.SearchTerm));
@@ -47,5 +59,4 @@ public class CartItemRepository : GenericRepository<CartItem, CartItemFilter>, I
         .Where(c => c.UserId == userId)
         .ExecuteDeleteAsync();
   }
-
 }

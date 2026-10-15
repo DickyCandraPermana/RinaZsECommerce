@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RinaZsECommerce.Domain.Entities;
@@ -20,6 +20,7 @@ public class AuditLogConfiguration : IEntityTypeConfiguration<AuditLog>
     builder.HasOne(l => l.User)
             .WithMany(u => u.AuditLogs)
             .HasForeignKey(l => l.UserId)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
     builder.HasIndex(l => l.EntityName);

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -30,7 +30,9 @@ public class GetCartItemsHandler : IRequestHandler<GetCartItemsQuery, IEnumerabl
             c.Id,
             c.ProductId,
             c.Product?.Name ?? "Unknown Product",
+            c.Product?.Images?.FirstOrDefault()?.ImageUrl,
             c.Product?.Price ?? 0,
+            c.Product?.Stock ?? 0,
             c.Amount,
             (c.Product?.Price ?? 0) * c.Amount
         ));

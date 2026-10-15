@@ -1,12 +1,16 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 namespace RinaZsECommerce.Application.DTOs;
 
 public record ProductResponse(
     Guid Id,
     string Name,
+    string? Description,
     decimal Price,
     int Stock,
-    string CategoryName, // Hasil "flattening" dari Category.Name
+    decimal Rating,
+    Guid CategoryId,
+    string CategoryName,
     List<string> ImageUrls
 );
