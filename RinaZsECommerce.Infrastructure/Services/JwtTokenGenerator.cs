@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -21,31 +21,30 @@ public class JwtTokenGenerator : IJwtTokenGenerator
     public string GenerateToken(User user)
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
-        var secret = jwtSettings["Secret"];
-        var issuer = jwtSettings["Issuer"];
-        var audience = jwtSettings["Audience"];
+        var secret = jwtSettings["Secret"] ?? "RinaZsECommerceSuperSecretKey2026SecureJwtTokenForFullstackStorefront!";
+        var issuer = jwtSettings["Issuer"] ?? "RinaZsECommerceAPI";
+        var audience = jwtSettings["Audience"] ?? "RinaZsECommerceClient";
 
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(secret!);
-
-        var claims = new List<Claim>
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role)
-        };
+        var key = Encoding.UTF8.GetBytes(secret);
+        var signingKey = new SymmetricSecurityKey(key);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddHours(2),
+            Claims = new Dictionary<string, object>
+            {
+                { "sub", user.Id.ToString() },
+                { "name", user.Username },
+                { "email", user.Email },
+                { "role", user.Role },
+                { "profileId", user.ProfileId.ToString() }
+            },
+            Expires = DateTime.UtcNow.AddDays(7),
             Issuer = issuer,
             Audience = audience,
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
         };
 
+        var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }

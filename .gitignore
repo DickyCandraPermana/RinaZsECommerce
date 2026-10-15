@@ -58,3 +58,16 @@ nunit-*.xml
 
 # todo
 todo.md
+
+# Frontend Node & Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+*.log
+*.tar.gz
+test_*.ps1
+apply_*.ps1
+decode_*.ps1
+verify_*.ps1
+check_*.sql
+curl_*.ps1

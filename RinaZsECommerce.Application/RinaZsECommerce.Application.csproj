@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,24 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Behaviors\" />
-    <Folder Include="Common\" />
-    <Folder Include="DTOs\" />
-    <Folder Include="Features\Products\Commands\DeleteProduct\" />
-    <Folder Include="Features\Products\Commands\UpdateProduct\" />
-    <Folder Include="Features\Products\Queries\" />
-    <Folder Include="Features\Products\Queries\GetProductById\" />
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
-
-  
-  <ItemGroup>
     <ProjectReference Include="..\RinaZsECommerce.Domain\RinaZsECommerce.Domain.csproj" />
   </ItemGroup>
 
-  
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="16.0.0" />
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="MediatR" Version="14.0.0" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="10.0.7" />

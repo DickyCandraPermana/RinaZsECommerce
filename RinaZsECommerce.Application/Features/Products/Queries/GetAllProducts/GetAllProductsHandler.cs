@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,12 +22,14 @@ public class GetAllProductsHandler : IRequestHandler<GetAllProductsQuery, IEnume
         var pagedProducts = await _unitOfWork.Products.GetPaginatedAsync(request.Filter);
         var products = pagedProducts.Items;
         
-        // Manual mapping for MVP
         return products.Select(p => new ProductResponse(
             p.Id,
             p.Name,
+            p.Description,
             p.Price,
             p.Stock,
+            p.Rating,
+            p.CategoryId,
             p.Category?.Name ?? "Unknown",
             p.Images?.Select(i => i.ImageUrl).ToList() ?? new List<string>()
         ));

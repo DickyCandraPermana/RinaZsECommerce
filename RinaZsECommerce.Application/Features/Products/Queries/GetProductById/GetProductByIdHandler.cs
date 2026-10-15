@@ -1,5 +1,8 @@
-using System;
-using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using MediatR;
 using RinaZsECommerce.Application.DTOs;
 using RinaZsECommerce.Domain.Entities;
@@ -10,24 +13,29 @@ namespace RinaZsECommerce.Application.Features.Products.Queries.GetProductById;
 public class GetProductByIdHandler : IRequestHandler<GetProductByIdQuery, ProductResponse>
 {
   private readonly IUnitOfWork _unitOfWork;
-  private readonly IMapper _mapper;
 
-  public GetProductByIdHandler(IUnitOfWork unitOfWork, IMapper mapper)
+  public GetProductByIdHandler(IUnitOfWork unitOfWork)
   {
     _unitOfWork = unitOfWork;
-    _mapper = mapper;
   }
 
   public async Task<ProductResponse> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
   {
-    // 1. Ambil data dari Repository
-    // Pastikan Repository sudah melakukan .Include(p => p.Category) dan .Include(p => p.Images)
     var product = await _unitOfWork.Products.GetByIdAsync(request.Id);
 
     if (product == null)
-      throw new KeyNotFoundException(nameof(Product));
+      throw new KeyNotFoundException($"Product with ID '{request.Id}' was not found.");
 
-    // 2. Map Entity ke Response DTO menggunakan AutoMapper
-    return _mapper.Map<ProductResponse>(product);
+    return new ProductResponse(
+      product.Id,
+      product.Name,
+      product.Description,
+      product.Price,
+      product.Stock,
+      product.Rating,
+      product.CategoryId,
+      product.Category?.Name ?? "Unknown",
+      product.Images?.Select(i => i.ImageUrl).ToList() ?? new List<string>()
+    );
   }
 }

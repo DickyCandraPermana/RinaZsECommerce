@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RinaZsECommerce.Domain.Entities;
@@ -16,12 +16,11 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
     builder.Property(u => u.DateOfBirth)
       .HasColumnType("date");
 
+    builder.HasQueryFilter(u => u.DeletedAt == null);
+
     builder.HasOne(u => u.User)
       .WithOne(p => p.UserProfile)
       .HasForeignKey<UserProfile>(u => u.UserId)
       .OnDelete(DeleteBehavior.Restrict);
-
-
   }
-
 }
